@@ -1,49 +1,101 @@
-import React from "react";
-import { ScrollView, Text, Linking, View } from "react-native";
-import { Card, Button } from "react-native-elements";
+import React, { Component } from 'react';
+import { AppRegistry, StyleSheet, View, Dimensions } from 'react-native';
+import { MapView } from 'expo';
 
-const images = [
-  {
-    key: 1,
-    name: "Nathan Anderson",
-    image: require("../images/1.jpg"),
-    url: "https://unsplash.com/photos/C9t94JC4_L8"
-  },
-  {
-    key: 2,
-    name: "Jamison McAndie",
-    image: require("../images/2.jpg"),
-    url: "https://unsplash.com/photos/waZEHLRP98s"
-  },
-  {
-    key: 3,
-    name: "Alberto Restifo",
-    image: require("../images/3.jpg"),
-    url: "https://unsplash.com/photos/cFplR9ZGnAk"
-  },
-  {
-    key: 4,
-    name: "John Towner",
-    image: require("../images/4.jpg"),
-    url: "https://unsplash.com/photos/89PFnHKg8HE"
+export default class Home extends Component {
+
+  constructor() {
+    super();
+    this.state = {
+      markers: [
+        {
+          coordinate: {
+            latitude: 45.524548,
+            longitude: -122.6749817,
+          },
+          title: "Best Place",
+          description: "This is the best place in Portland",
+        },
+        {
+          coordinate: {
+            latitude: 45.524698,
+            longitude: -122.6655507,
+          },
+          title: "Second Best Place",
+          description: "This is the second best place in Portland",
+        },
+        {
+          coordinate: {
+            latitude: 45.5230786,
+            longitude: -122.6701034,
+          },
+          title: "Third Best Place",
+          description: "This is the third best place in Portland",
+        },
+        {
+          coordinate: {
+            latitude: 45.521016,
+            longitude: -122.6561917,
+          },
+          title: "Fourth Best Place",
+          description: "This is the fourth best place in Portland",
+        },
+      ],
+      region: {
+        latitude: 43.703549,
+        longitude: -72.286758,
+        latitudeDelta: 0.004864195044303443,
+        longitudeDelta: 0.0040142817690068,
+      },
+    };
   }
-];
 
-export default () => (
-  <View style={{ flex: 1 }}>
-    <ScrollView contentContainerStyle={{ paddingVertical: 20 }}>
-      {images.map(({ name, image, url, key }) => (
-        <Card title={`CARD ${key}`} image={image} key={key}>
-          <Text style={{ marginBottom: 10 }}>
-            Photo by {name}.
-          </Text>
-          <Button
-            backgroundColor="#03A9F4"
-            title="VIEW NOW"
-            onPress={() => Linking.openURL(url)}
-          />
-        </Card>
-      ))}
-    </ScrollView>
-  </View>
-);
+  getInitialState() {
+    return {
+      region: {
+        latitude: 43.703549,
+        longitude: -72.286758,
+        latitudeDelta: 0.004864195044303443,
+        longitudeDelta: 0.0040142817690068,
+      }
+    };
+  }
+
+  render() {
+    return (
+      <MapView
+      style={ styles.container }
+      ref={map => this.map = map}
+      initialRegion={this.state.region}
+      onRegionChange={ region => this.setState({region}) }
+      onRegionChangeComplete={ region => this.setState({region}) }
+      onPanDrag= { coordinate => this.setState({coordinate})}
+      >
+      {this.state.markers.map((marker, index) => {
+        return (
+          <MapView.Marker key={index} coordinate={marker.coordinate}/>
+        );
+      })}
+      </MapView>
+    );
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    height: '100%',
+    width: '100%',
+  },
+  markerWrap: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  marker: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "rgba(130,4,150, 0.9)",
+  }
+});
+
+AppRegistry.registerComponent('Home', () => Home);
