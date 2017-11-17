@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { AppRegistry, StyleSheet, View, Dimensions } from 'react-native';
 import { MapView } from 'expo';
+import Modal from 'react-native-simple-modal';
+
+let id = 0;
 
 export default class Home extends Component {
 
@@ -10,35 +13,19 @@ export default class Home extends Component {
       markers: [
         {
           coordinate: {
-            latitude: 45.524548,
-            longitude: -122.6749817,
+            latitude: 43.702087,
+            longitude: -72.289022,
           },
-          title: "Best Place",
-          description: "This is the best place in Portland",
+          title: "Hanover Inn",
+          description: "Alexandrea is here until 5:30 PM",
         },
         {
           coordinate: {
-            latitude: 45.524698,
-            longitude: -122.6655507,
+            latitude: 43.702668,
+            longitude: -72.289845,
           },
-          title: "Second Best Place",
-          description: "This is the second best place in Portland",
-        },
-        {
-          coordinate: {
-            latitude: 45.5230786,
-            longitude: -122.6701034,
-          },
-          title: "Third Best Place",
-          description: "This is the third best place in Portland",
-        },
-        {
-          coordinate: {
-            latitude: 45.521016,
-            longitude: -122.6561917,
-          },
-          title: "Fourth Best Place",
-          description: "This is the fourth best place in Portland",
+          title: "Collis Center",
+          description: "Hilda is here until 5:00 PM",
         },
       ],
       region: {
@@ -61,24 +48,45 @@ export default class Home extends Component {
     };
   }
 
-  render() {
-    return (
-      <MapView
-      style={ styles.container }
-      ref={map => this.map = map}
-      initialRegion={this.state.region}
-      onRegionChange={ region => this.setState({region}) }
-      onRegionChangeComplete={ region => this.setState({region}) }
-      onPanDrag= { coordinate => this.setState({coordinate})}
-      >
-      {this.state.markers.map((marker, index) => {
-        return (
-          <MapView.Marker key={index} coordinate={marker.coordinate}/>
-        );
-      })}
-      </MapView>
-    );
-  }
+  createMarker(e) {
+    this.setState({
+      markers: [
+        ...this.state.markers,
+        {
+          coordinate: e.nativeEvent.coordinate,
+          key: id++,
+          title: "EDIT",
+          description: "EDIT",
+        },
+      ],
+    });
+}
+
+render() {
+  return (
+    <MapView
+    style={ styles.container }
+    initialRegion={this.state.region}
+    onRegionChange={ region => this.setState({region}) }
+    onRegionChangeComplete={ region => this.setState({region}) }
+    onLongPress={ (e) => this.createMarker(e) }
+    showsBuildings ={ true }
+    region={ this.state.region }
+    >
+    {this.state.markers.map((marker, index) => {
+      return (
+        <MapView.Marker
+        ref={marker => (this.marker = marker)}
+        key={index}
+        coordinate={marker.coordinate}
+        title={marker.title}
+        description={marker.description}
+        />
+      );
+    })}
+    </MapView>
+  );
+}
 }
 
 const styles = StyleSheet.create({
