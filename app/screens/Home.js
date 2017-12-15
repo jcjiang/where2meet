@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { AppRegistry, StyleSheet, View, Dimensions } from 'react-native';
 import { MapView } from 'expo';
 import Modal from 'react-native-simple-modal';
+import firebase from '../firebase';
 
 let id = 0;
 
@@ -9,24 +10,9 @@ export default class Home extends Component {
 
   constructor() {
     super();
+    this.itemsRef = firebase.database().ref();
     this.state = {
       markers: [
-        {
-          coordinate: {
-            latitude: 43.702087,
-            longitude: -72.289022,
-          },
-          title: "Hanover Inn",
-          description: "Alexandrea is here until 5:30 PM",
-        },
-        {
-          coordinate: {
-            latitude: 43.702668,
-            longitude: -72.289845,
-          },
-          title: "Collis Center",
-          description: "Hilda is here until 5:00 PM",
-        },
       ],
       region: {
         latitude: 43.703549,
@@ -35,6 +21,31 @@ export default class Home extends Component {
         longitudeDelta: 0.0040142817690068,
       },
     };
+  }
+
+  componentDidMount() {
+    this.listenForItems(this.itemsRef);
+  }
+
+  listenForItems(itemsRef) {
+    itemsRef.on('value', (snap) => {
+
+      // get children as an array
+      var items = [];
+      snap.forEach((child) => {
+        items.push({
+          title: child.val().title,
+          coordinate: child.val().coordinate,
+          description: child.val().description,
+          _key: child.key
+        });
+      });
+
+      this.setState({
+        markers: items,
+      });
+
+    });
   }
 
   getInitialState() {
@@ -49,6 +60,12 @@ export default class Home extends Component {
   }
 
   createMarker(e) {
+    this.itemsRef.push({
+      coordinate: e.nativeEvent.coordinate,
+      key: id++,
+      title: "EDIT",
+      description: "EDIT",
+    });
     this.setState({
       markers: [
         ...this.state.markers,
@@ -66,7 +83,12 @@ render() {
   return (
     <MapView
     style={ styles.container }
-    initialRegion={this.state.region}
+    initialRegion={{
+      latitude: 37.78825,
+      longitude: -122.4324,
+      latitudeDelta: 0.0922,
+      longitudeDelta: 0.0421,
+    }}
     onRegionChange={ region => this.setState({region}) }
     onRegionChangeComplete={ region => this.setState({region}) }
     onLongPress={ (e) => this.createMarker(e) }

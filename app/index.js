@@ -2,7 +2,7 @@
 import React from "react";
 import { createRootNavigator } from "./router";
 import { isSignedIn } from "./auth";
-import * as firebase from 'firebase';
+import firebase from './firebase';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -15,15 +15,7 @@ export default class App extends React.Component {
   }
 
   componentDidMount() {
-    const config = {
-      apiKey: "AIzaSyB0w6HmrgkakHS069xfMTjHP-88x7udpAQ",
-      authDomain: "where2meet-e6c9a.firebaseapp.com",
-      databaseURL: "https://where2meet-e6c9a.firebaseio.com",
-      projectId: "where2meet-e6c9a",
-      storageBucket: "where2meet-e6c9a.appspot.com",
-      messagingSenderId: "411286369839"
-    };
-    firebase.initializeApp(config);
+
   }
 
 
