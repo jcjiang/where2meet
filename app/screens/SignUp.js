@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View } from "react-native";
+import { View, Text } from "react-native";
 import { Card, Button, FormLabel, FormInput } from "react-native-elements";
 import { onSignIn } from "../auth";
 import styles from '../styles/common-styles.js';
@@ -14,9 +14,15 @@ export default class SignUp extends Component {
       username: '',
       password: '',
       loaded: true,
-      user: null
+      user: null,
+      isModalVisible: false,
     }
   }
+
+  _showModal = () => this.setState({ isModalVisible: true })
+
+  _hideModal = () => this.setState({ isModalVisible: false })
+
   render(){
     return (
 
@@ -73,7 +79,8 @@ export default class SignUp extends Component {
           loaded: true
         });
         resolve(user);
-      });
+      })
+      .catch(err => alert(err));
     });
   }
 }

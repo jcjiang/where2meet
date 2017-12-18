@@ -64,7 +64,8 @@ signIn() {
           loaded: true
         });
         resolve(user);
-      });
+      })
+      .catch(err => alert(err));
     });
   }
 

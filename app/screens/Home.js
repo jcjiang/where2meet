@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { AppRegistry, StyleSheet, View, Dimensions } from 'react-native';
+import { AppRegistry, StyleSheet, View, Dimensions, Text } from 'react-native';
 import { MapView } from 'expo';
-import Modal from 'react-native-simple-modal';
+import Modal from 'react-native-modal';
 import firebase from '../firebase';
 
 let id = 0;
@@ -12,6 +12,7 @@ export default class Home extends Component {
     super();
     this.itemsRef = firebase.database().ref();
     this.state = {
+      isModalVisible: false,
       markers: [
       ],
       region: {
@@ -22,6 +23,10 @@ export default class Home extends Component {
       },
     };
   }
+
+  _showModal = () => this.setState({ isModalVisible: true })
+
+  _hideModal = () => this.setState({ isModalVisible: false })
 
   componentDidMount() {
     this.listenForItems(this.itemsRef);
@@ -59,12 +64,12 @@ export default class Home extends Component {
     };
   }
 
-  createMarker(e) {
+  createMarker(e, title, description) {
     this.itemsRef.push({
       coordinate: e.nativeEvent.coordinate,
       key: id++,
-      title: "EDIT",
-      description: "EDIT",
+      title: title,
+      description: description,
     });
     this.setState({
       markers: [
@@ -72,8 +77,8 @@ export default class Home extends Component {
         {
           coordinate: e.nativeEvent.coordinate,
           key: id++,
-          title: "EDIT",
-          description: "EDIT",
+          title: title,
+          description: description,
         },
       ],
     });
@@ -81,6 +86,7 @@ export default class Home extends Component {
 
 render() {
   return (
+    <View style={{flex: 1}}>
     <MapView
     style={ styles.container }
     initialRegion={{
@@ -91,7 +97,7 @@ render() {
     }}
     onRegionChange={ region => this.setState({region}) }
     onRegionChangeComplete={ region => this.setState({region}) }
-    onLongPress={ (e) => this.createMarker(e) }
+    onLongPress={ (e) => console.log(e)}
     showsBuildings ={ true }
     region={ this.state.region }
     >
@@ -107,6 +113,12 @@ render() {
       );
     })}
     </MapView>
+    <Modal isVisible={this.state.isModalVisible}>
+        <View style={{ flex: 1 }}>
+          <Text>Hello!</Text>
+        </View>
+    </Modal>
+    </View>
   );
 }
 }
