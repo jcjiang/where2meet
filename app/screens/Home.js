@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { AppRegistry, StyleSheet, View, Dimensions, Text } from 'react-native';
+import { AppRegistry, StyleSheet, View, Dimensions, Text, Button, AlertIOS } from 'react-native';
+import { FormLabel, FormInput } from 'react-native-elements'
 import { MapView } from 'expo';
 import Modal from 'react-native-modal';
 import firebase from '../firebase';
@@ -13,6 +14,9 @@ export default class Home extends Component {
     this.itemsRef = firebase.database().ref();
     this.state = {
       isModalVisible: false,
+      name: '',
+      location: '',
+      time: '',
       markers: [
       ],
       region: {
@@ -64,66 +68,123 @@ export default class Home extends Component {
     };
   }
 
-  createMarker(e, title, description) {
+  createMarker(e) {
+    console.log(this.itemsRef);
     this.itemsRef.push({
       coordinate: e.nativeEvent.coordinate,
       key: id++,
-      title: title,
-      description: description,
+      title: "Edit by pressing!",
+      description: "Edit by pressing!",
     });
     this.setState({
       markers: [
         ...this.state.markers,
         {
           coordinate: e.nativeEvent.coordinate,
-          key: id++,
-          title: title,
-          description: description,
+          key: id,
+          title: "Edit by pressing!",
+          description: "Edit by pressing!",
         },
       ],
     });
 }
 
-render() {
-  return (
-    <View style={{flex: 1}}>
-    <MapView
-    style={ styles.container }
-    initialRegion={{
-      latitude: 37.78825,
-      longitude: -122.4324,
-      latitudeDelta: 0.0922,
-      longitudeDelta: 0.0421,
-    }}
-    onRegionChange={ region => this.setState({region}) }
-    onRegionChangeComplete={ region => this.setState({region}) }
-    onLongPress={ (e) => console.log(e)}
-    showsBuildings ={ true }
-    region={ this.state.region }
-    >
-    {this.state.markers.map((marker, index) => {
-      return (
-        <MapView.Marker
-        ref={marker => (this.marker = marker)}
-        key={index}
-        coordinate={marker.coordinate}
-        title={marker.title}
-        description={marker.description}
-        />
-      );
-    })}
-    </MapView>
-    <Modal isVisible={this.state.isModalVisible}>
-        <View style={{ flex: 1 }}>
-          <Text>Hello!</Text>
-        </View>
-    </Modal>
-    </View>
-  );
-}
+
+  render() {
+    return (
+      <View style = {styles.outside}>
+      <MapView
+      style={ styles.container }
+      initialRegion={{
+        latitude: 37.78825,
+        longitude: -122.4324,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      }}
+      onRegionChange={ region => this.setState({region}) }
+      onRegionChangeComplete={ region => this.setState({region}) }
+      onLongPress={ (e) => this.createMarker(e)}
+      showsBuildings ={ true }
+      region={ this.state.region }
+      >
+      {this.state.markers.map((marker, index) => {
+        return (
+          <MapView.Marker
+          ref={marker => (this.marker = marker)}
+          key={index}
+          coordinate={marker.coordinate}
+          title={marker.title}
+          description={marker.description}
+          >
+            <MapView.Callout
+              style={styles.plainView}
+              onPress={this._showModal}
+            >
+            <View>
+             <Text> {marker.description} </Text>
+             <Modal
+             isVisible={this.state.isModalVisible}
+             backdropColor={'black'}
+             backdropOpacity={0.25}
+             animationIn={'zoomInDown'}
+             animationOut={'zoomOutUp'}
+             animationInTiming={1000}
+             animationOutTiming={1000}
+             backdropTransitionInTiming={1000}
+             backdropTransitionOutTiming={1000}>
+             <View style={styles.modalContent}>
+               <Text>Set your projected location and time below.</Text>
+               <FormLabel>Name</FormLabel>
+               <FormInput
+                 style={[styles.textinput]}
+                 onChangeText={(text) => this.setState({name: text})}
+                 value={this.state.name}
+                 placeholder={"Write your name here"}
+               />
+               <FormLabel>Location</FormLabel>
+               <FormInput
+                 style={[styles.textinput]}
+                 onChangeText={(text) => this.setState({location: text})}
+                 value={this.state.location}
+                 placeholder={"Write location here (ex: Collis 303)"}
+               />
+               <FormLabel>Time</FormLabel>
+               <FormInput
+                 style={[styles.textinput]}
+                 onChangeText={(text) => this.setState({time: text})}
+                 value={this.state.time}
+                 placeholder={"Write time here (ex: 6 PM)"}
+               />
+               <Button onPress={() => this.itemsRef.child(marker._key).update({ description: `${this.state.name} will be at ${this.state.location} at ${this.state.time}`})} title='Press to update marker'/>
+               <Button onPress={() => this.itemsRef.child(marker._key).remove()} title='Press to delete marker'/>
+               <Button onPress={this._hideModal} title='Finished' />
+             </View>
+             </Modal>
+           </View>
+           </MapView.Callout>
+          </MapView.Marker>
+        );
+      })}
+      </MapView>
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 22,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 4,
+    borderColor: 'rgba(0, 0, 0, 0.1)',
+  },
+  outside: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   container: {
     height: '100%',
     width: '100%',
