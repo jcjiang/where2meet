@@ -76,6 +76,7 @@ export default class Home extends Component {
       title: "Edit by pressing!",
       description: "Edit by pressing!",
     });
+    console.log(id);
     this.setState({
       markers: [
         ...this.state.markers,
@@ -87,6 +88,19 @@ export default class Home extends Component {
         },
       ],
     });
+}
+
+updateMarker(key) {
+  console.log(key);
+  return this.itemsRef.child(key).update({
+    description: `${this.state.name} will be at ${this.state.location} at ${this.state.time}`,
+  });
+}
+
+deleteMarker(key) {
+  console.log(key);
+  this._hideModal;
+  return this.itemsRef.child(key).remove();
 }
 
 
@@ -155,8 +169,8 @@ export default class Home extends Component {
                  value={this.state.time}
                  placeholder={"Write time here (ex: 6 PM)"}
                />
-               <Button onPress={() => this.itemsRef.child(marker._key).update({ description: `${this.state.name} will be at ${this.state.location} at ${this.state.time}`})} title='Press to update marker'/>
-               <Button onPress={() => this.itemsRef.child(marker._key).remove()} title='Press to delete marker'/>
+               <Button onPress={() => this.updateMarker(marker.key)} title='Press to update marker'/>
+               <Button onPress={() => this.deleteMarker(marker.key)} title='Press to delete marker'/>
                <Button onPress={this._hideModal} title='Finished' />
              </View>
              </Modal>
