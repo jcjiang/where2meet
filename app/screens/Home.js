@@ -76,31 +76,22 @@ export default class Home extends Component {
       title: "Edit by pressing!",
       description: "Edit by pressing!",
     });
-    console.log(id);
-    this.setState({
-      markers: [
-        ...this.state.markers,
-        {
-          coordinate: e.nativeEvent.coordinate,
-          key: id,
-          title: "Edit by pressing!",
-          description: "Edit by pressing!",
-        },
-      ],
-    });
 }
 
-updateMarker(key) {
-  console.log(key);
-  return this.itemsRef.child(key).update({
+updateMarker(marker) {
+  this._hideModal;
+  console.log(marker);
+  this.itemsRef.child(marker._key).update({
     description: `${this.state.name} will be at ${this.state.location} at ${this.state.time}`,
   });
 }
 
-deleteMarker(key) {
-  console.log(key);
+deleteMarker(marker) {
   this._hideModal;
-  return this.itemsRef.child(key).remove();
+  console.log(marker);
+  this.setState({isModalVisible: false});
+  console.log(this.state.isModalVisible);
+  this.itemsRef.child(marker._key).remove();
 }
 
 
@@ -169,8 +160,8 @@ deleteMarker(key) {
                  value={this.state.time}
                  placeholder={"Write time here (ex: 6 PM)"}
                />
-               <Button onPress={() => this.updateMarker(marker.key)} title='Press to update marker'/>
-               <Button onPress={() => this.deleteMarker(marker.key)} title='Press to delete marker'/>
+               <Button onPress={() => this.updateMarker(marker)} title='Press to update marker'/>
+               <Button onPress={() => this.deleteMarker(marker)} title='Press to delete marker'/>
                <Button onPress={this._hideModal} title='Finished' />
              </View>
              </Modal>
