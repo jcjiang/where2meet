@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { AppRegistry, StyleSheet, View, Dimensions, Text, Button, AlertIOS } from 'react-native';
-import { FormLabel, FormInput } from 'react-native-elements'
+import { FormLabel, FormInput, Card } from 'react-native-elements'
 import { MapView } from 'expo';
 import Modal from 'react-native-modal';
 import firebase from '../firebase';
@@ -138,7 +138,7 @@ deleteMarker(marker) {
              backdropTransitionInTiming={1000}
              backdropTransitionOutTiming={1000}>
              <View style={styles.modalContent}>
-               <Text>Set your projected location and time below.</Text>
+               <Text style={{ paddingLeft: 30 }}>Set your projected location and time below.</Text>
                <FormLabel>Name</FormLabel>
                <FormInput
                  style={[styles.textinput]}
@@ -179,9 +179,8 @@ deleteMarker(marker) {
 const styles = StyleSheet.create({
   modalContent: {
     backgroundColor: 'white',
-    padding: 22,
+    paddingVertical: 20,
     justifyContent: 'center',
-    alignItems: 'center',
     borderRadius: 4,
     borderColor: 'rgba(0, 0, 0, 0.1)',
   },
@@ -197,6 +196,11 @@ const styles = StyleSheet.create({
   markerWrap: {
     alignItems: "center",
     justifyContent: "center",
+  },
+  textinput: {
+    height: 40,
+    borderColor: 'red',
+    borderWidth: 1
   },
   marker: {
     width: 8,
