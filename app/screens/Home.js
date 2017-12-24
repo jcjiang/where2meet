@@ -82,7 +82,7 @@ export default class Home extends Component {
 updateMarker(marker) {
   this._hideModal;
   console.log(marker);
-  this.setState({isModalVisible: false});
+  this.setState({isModalVisible: false, name: '', location: '', time: ''});
   this.itemsRef.child(marker._key).update({
     description: `${this.state.name} will be at ${this.state.location} at ${this.state.time}`,
   });
@@ -91,7 +91,7 @@ updateMarker(marker) {
 deleteMarker(marker) {
   this._hideModal;
   console.log(marker);
-  this.setState({isModalVisible: false});
+  this.setState({isModalVisible: false, name: '', location: '', time: ''});
   console.log(this.state.isModalVisible);
   this.itemsRef.child(marker._key).remove();
 }
