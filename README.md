@@ -49,3 +49,5 @@ Uhhh to be honest, a lot.
 Integrating the AirBnb API was difficult since it has been a while since I had to read through API documentation, and since I was using several different libraries in this app, I had to make sure none of them collided in bad ways.  For example, it was really hard figuring out how to integrate the modal with AirBnb Maps.
 
 Figuring out how to access the information of the marker was also very difficult, compounded by problems with keys and creating markers that took input information from two different sources (AirBnb API and the modal) which meant I either had to save things to state or consolidate.
+
+[New] To fix the bug with the lack of syncing, I had to revamp the Marker component to include additional fields and figure out how exactly those related to the displays.  Just a lot of moving parts to keep track of.

@@ -29,10 +29,6 @@ export default class Home extends Component {
     };
   }
 
-  _showModal = () => this.setState({ isModalVisible: true })
-
-  _hideModal = () => this.setState({ isModalVisible: false, name: '', location: '', time: '' })
-
   componentDidMount() {
     this.listenForItems(this.itemsRef);
   }
@@ -47,6 +43,9 @@ export default class Home extends Component {
           title: child.val().title,
           coordinate: child.val().coordinate,
           description: child.val().description,
+          name: child.val().name,
+          location: child.val().location,
+          time: child.val().time,
           _key: child.key
         });
       });
@@ -69,6 +68,17 @@ export default class Home extends Component {
     };
   }
 
+  _showModal(name, location, time) {
+    this.setState({
+      isModalVisible: true,
+      name: name,
+      location: location,
+      time: time
+    });
+  }
+
+  _hideModal = () => this.setState({ isModalVisible: false})
+
   createMarker(e) {
     console.log(this.itemsRef);
     this.itemsRef.push({
@@ -76,23 +86,24 @@ export default class Home extends Component {
       key: id++,
       title: "Edit by pressing!",
       description: "Edit by pressing!",
+      name: '',
+      location: '',
+      time: '',
     });
 }
 
 updateMarker(marker) {
-  this._hideModal;
-  console.log(marker);
   this.setState({isModalVisible: false, name: '', location: '', time: ''});
   this.itemsRef.child(marker._key).update({
+    name: this.state.name,
+    location: this.state.location,
+    time: this.state.time,
     description: `${this.state.name} will be at ${this.state.location} at ${this.state.time}`,
   });
 }
 
 deleteMarker(marker) {
-  this._hideModal;
-  console.log(marker);
   this.setState({isModalVisible: false, name: '', location: '', time: ''});
-  console.log(this.state.isModalVisible);
   this.itemsRef.child(marker._key).remove();
 }
 
@@ -117,15 +128,12 @@ deleteMarker(marker) {
       {this.state.markers.map((marker, index) => {
         return (
           <MapView.Marker
-          ref={marker => (this.marker = marker)}
           key={index}
           coordinate={marker.coordinate}
-          title={marker.title}
-          description={marker.description}
           >
             <MapView.Callout
               style={styles.plainView}
-              onPress={this._showModal}
+              onPress={() => this._showModal(marker.name, marker.time, marker.location)}
             >
             <View>
              <Text> {marker.description} </Text>
