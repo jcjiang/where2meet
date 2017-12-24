@@ -40,7 +40,7 @@ Both functionalities are supported with the Firebase database, and changes are e
 
 Sometimes the map will not start on Hanover.  If so, you have to restart and log-in again until it does.
 
-The modal freezes when a marker is deleted or updated because the modal is created as part of the marker in order to access its coordinate information.  To see changes that come with the update or delete, you have to check Firebase and/or refresh the app, which will get rid of the modal and let you see the MapView screen.
+When markers are updated, the styling has some strange spacing at first - it goes back to normal when you 'refresh' AKA click outside and click on it again.  This seems to have to do with the AirBnb API since that's where the styling of the markers come from.
 
 ## Difficulties
 
