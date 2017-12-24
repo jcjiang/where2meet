@@ -17,6 +17,7 @@ export default class Home extends Component {
       name: '',
       location: '',
       time: '',
+      currentMarker: '',
       markers: [
       ],
       region: {
@@ -30,7 +31,7 @@ export default class Home extends Component {
 
   _showModal = () => this.setState({ isModalVisible: true })
 
-  _hideModal = () => this.setState({ isModalVisible: false })
+  _hideModal = () => this.setState({ isModalVisible: false, name: '', location: '', time: '' })
 
   componentDidMount() {
     this.listenForItems(this.itemsRef);
@@ -81,6 +82,7 @@ export default class Home extends Component {
 updateMarker(marker) {
   this._hideModal;
   console.log(marker);
+  this.setState({isModalVisible: false});
   this.itemsRef.child(marker._key).update({
     description: `${this.state.name} will be at ${this.state.location} at ${this.state.time}`,
   });
