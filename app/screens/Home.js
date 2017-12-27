@@ -103,8 +103,11 @@ updateMarker(marker) {
 }
 
 deleteMarker(marker) {
-  this.setState({isModalVisible: false, name: '', location: '', time: ''});
-  this.itemsRef.child(marker._key).remove();
+  this._hideModal;
+  this.itemsRef.child(marker._key).remove().then(
+    this.setState({isModalVisible: false, name: '', location: '', time: ''})
+  );
+  //this.itemsRef.child(marker._key).remove();
 }
 
 
@@ -133,7 +136,7 @@ deleteMarker(marker) {
           >
             <MapView.Callout
               style={styles.plainView}
-              onPress={() => this._showModal(marker.name, marker.time, marker.location)}
+              onPress={() => this._showModal(marker.name, marker.location, marker.time)}
             >
             <View>
              <Text> {marker.description} </Text>
