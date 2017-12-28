@@ -12,7 +12,9 @@ export default class Home extends Component {
   constructor() {
     super();
     this.itemsRef = firebase.database().ref();
+    this.setState = this.setState.bind(this);
     this.state = {
+      regionSet: false,
       isModalVisible: false,
       name: '',
       location: '',
@@ -23,14 +25,28 @@ export default class Home extends Component {
       region: {
         latitude: 43.703549,
         longitude: -72.286758,
-        latitudeDelta: 0.004864195044303443,
-        longitudeDelta: 0.0040142817690068,
+        latitudeDelta: 0.004757,
+        longitudeDelta: 0.006866,
       },
     };
   }
 
+  onRegionChange = (region) => {
+  if (!this.state.regionSet) return;
+  this.setState({
+    region
+  });
+}
+
   componentDidMount() {
     this.listenForItems(this.itemsRef);
+    const region = {
+      latitude: 43.703549,
+      longitude: -72.286758,
+      latitudeDelta: 0.004757,
+      longitudeDelta: 0.006866,
+      }
+      this.setState({ region, regionSet: true })
   }
 
   listenForItems(itemsRef) {
@@ -62,8 +78,8 @@ export default class Home extends Component {
       region: {
         latitude: 43.703549,
         longitude: -72.286758,
-        latitudeDelta: 0.004864195044303443,
-        longitudeDelta: 0.0040142817690068,
+        latitudeDelta: 0.004757,
+        longitudeDelta: 0.006866,
       }
     };
   }
@@ -77,7 +93,7 @@ export default class Home extends Component {
     });
   }
 
-  _hideModal = () => this.setState({ isModalVisible: false})
+  _hideModal = () => this.setState({ isModalVisible: false, name: '', location: '', time: '' })
 
   createMarker(e) {
     console.log(this.itemsRef);
@@ -103,11 +119,9 @@ updateMarker(marker) {
 }
 
 deleteMarker(marker) {
-  this._hideModal;
-  this.itemsRef.child(marker._key).remove().then(
-    this.setState({isModalVisible: false, name: '', location: '', time: ''})
-  );
-  //this.itemsRef.child(marker._key).remove();
+  this.setState({isModalVisible: false, name: '', location: '', time: ''});
+  setTimeout(() => {this.itemsRef.child(marker._key).remove()}, 500);
+  console.log(this.state.isModalVisible);
 }
 
 
@@ -117,14 +131,17 @@ deleteMarker(marker) {
       <MapView
       style={ styles.container }
       initialRegion={{
-        latitude: 37.78825,
-        longitude: -122.4324,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
+        latitude: 43.703549,
+        longitude: -72.286758,
+        latitudeDelta: 0.004757,
+        longitudeDelta: 0.006866,
       }}
       onRegionChange={ region => this.setState({region}) }
       onRegionChangeComplete={ region => this.setState({region}) }
       onLongPress={ (e) => this.createMarker(e)}
+      onMapReady={() => {
+            this.setState({ regionSet: true });
+      }}
       showsBuildings ={ true }
       region={ this.state.region }
       >
@@ -144,10 +161,6 @@ deleteMarker(marker) {
              isVisible={this.state.isModalVisible}
              backdropColor={'black'}
              backdropOpacity={0.25}
-             animationIn={'zoomInDown'}
-             animationOut={'zoomOutUp'}
-             animationInTiming={1000}
-             animationOutTiming={1000}
              backdropTransitionInTiming={1000}
              backdropTransitionOutTiming={1000}>
              <View style={styles.modalContent}>
