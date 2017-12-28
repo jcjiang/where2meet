@@ -38,9 +38,9 @@ Both functionalities are supported with the Firebase database, and changes are e
 
 ## Known bugs
 
-Sometimes the map will not start on Hanover.  If so, you have to restart and log-in again until it does.
-
 When markers are updated, the styling has some strange spacing at first - it goes back to normal when you 'refresh' AKA click outside and click on it again.  This seems to have to do with the AirBnb API since that's where the styling of the markers come from.
+
+If you notice any, please leave an issue!
 
 ## Difficulties
 
